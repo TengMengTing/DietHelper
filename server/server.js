@@ -5,31 +5,17 @@ import "dotenv/config"
 
 const app = express()
 const PORT = process.env.PORT || 5000
-//const target = document.getElementById('submit')
 
-app.use(cors)
+app.use(cors())
 
-var diet = ['']
-var health = ['vegan']
-
-// target.addEventListener('click', (e) =>{
-//     e.preventDefault()
-//     fetchAPI()
-// })
-
-app.get('/recipes/chicken', async (req, res) =>{
-    console.log('in')
-    const response = await axios.get(`https://api.edamam.com/search?q=chicken&app_id=${process.env.APP_ID}&app_key=${process.env.APP_KEY}`)
-    console.log(response.data)
-    res.json(response.data)
+app.get('/recipes/:diet', async (req, res) => {
+    const response = await axios.get(
+        `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.APP_ID}&app_key=${process.env.APP_KEY}&ingr=0-5&diet=${req.params.diet}&random=true`
+    )
+    console.log(response.data.hits)
+    res.json(response.data.hits)
 })
 
-
-// async function fetchAPI() {
-//     const response = await axios.get(`https://api.edamam.com/search?app_id=${process.env.APP_ID}&app_key=${process.env.APP_KEY}&health=${health}`)
-//     console.log(response.data)
-// }
-
 app.listen(PORT, () => {
-    console.log(`Server is listening to port ${PORT}`)
+    console.log(`Server is listening on port ${PORT}`)
 })
